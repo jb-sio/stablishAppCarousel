@@ -29,8 +29,9 @@ class AmountCarousel extends StatelessWidget {
           return AnimatedBuilder(
             animation: controller,
             builder: (context, _) {
-              final double page =
-                  controller.hasClients ? (controller.page ?? 1.0) : 1.0;
+              final double page = controller.hasClients
+                  ? (controller.page ?? controller.initialPage.toDouble())
+                  : controller.initialPage.toDouble();
               final double t = (page - index).abs().clamp(0.0, 1.0);
               final double scale = lerpDouble(1.0, 0.52, t)!;
               final Color color = Color.lerp(
@@ -43,12 +44,19 @@ class AmountCarousel extends StatelessWidget {
               return OverflowBox(
                 maxWidth: double.infinity,
                 child: Center(
-                  child: Transform.scale(
-                    scale: scale,
-                    child: _AmountItem(
-                      amount: carouselItems[index].amount,
-                      color: color,
-                      showPrefix: isActive,
+                  child: GestureDetector(
+                    onTap: () => controller.animateToPage(
+                      index,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    ),
+                    child: Transform.scale(
+                      scale: scale,
+                      child: _AmountItem(
+                        amount: carouselItems[index].amount,
+                        color: color,
+                        showPrefix: isActive,
+                      ),
                     ),
                   ),
                 ),

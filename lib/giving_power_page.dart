@@ -21,6 +21,11 @@ class _GivingPowerPageState extends State<GivingPowerPage> {
   void initState() {
     super.initState();
     _controller.addListener(_onScroll);
+    // Force a rebuild after the first frame so the PageController is fully
+    // attached and controller.page returns the real initialPage value.
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) setState(() {});
+    });
   }
 
   void _onScroll() {
@@ -53,6 +58,7 @@ class _GivingPowerPageState extends State<GivingPowerPage> {
                 // Card
                 Container(
                   width: double.infinity,
+                  clipBehavior: Clip.antiAlias,
                   padding: const EdgeInsets.fromLTRB(0, 36, 0, 32),
                   decoration: BoxDecoration(
                     color: Colors.white,
